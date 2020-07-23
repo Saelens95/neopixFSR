@@ -1,0 +1,60 @@
+//This #include statement was automatically added by the Particle IDE.
+#include "lib1.h"
+#include "application.h"
+#include "neopixel/neopixel.h"
+
+//Defining the NeoPixel
+#define PIXEL_COUNT 30
+#define PIXEL_PIN 3
+#define PIXEL_TYPE WS2812B
+#define CYAN 10,150,70
+
+int fsrPin = A2; //Analog 2 Pin for FSR
+int fsrReading; //Analog reading of FSR for debugging
+int i;
+
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXEL_COUNT, PIXEL_PIN, PIXEL_TYPE);
+
+void spin(int R, int G, int B, int wait);
+void turnOff(int wait);
+
+void setup(){
+    Serial.begin(9600);
+    strip.begin();
+    strip.show();
+}
+
+void loop() {
+    fsrReading = analogRead(fsrPin);
+    Serial.print("Analog Reading: ");
+    Serial.println(fsrReading);
+
+    if(fsrReading > 500 and fsrReading <= 1500)
+    
+        spin(CYAN);
+
+    else
+        turnOff(3);
+
+    delay(12);
+    
+}
+
+void spin(int R, int G, int B) {
+    for(i=0; i < PIXEL_COUNT; i++) {
+        strip.setPixelColor(i, R,G,B);
+        strip.show();
+        delay(3);
+    }
+}
+    
+void turnOff(int wait) {
+    Serial.println("Off");
+    for(i=0; i < PIXEL_COUNT; i++) {
+        strip.setPixelColor(i,0,0,0);
+        strip.show();
+        delay(wait);
+    }
+    strip.show();
+}
